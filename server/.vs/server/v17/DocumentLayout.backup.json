@@ -1,0 +1,208 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250201172904_typeJsonRemove.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20250201172904_typeJsonRemove.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\slide.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\slide.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\entity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\entity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\presentation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\presentation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\userpresentation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\userpresentation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\presentationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\presentationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250201172354_typeJson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20250201172354_typeJson.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\controllers\\presentationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:controllers\\presentationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\commands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\commands.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PresentationHub.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\PresentationHub.cs",
+              "RelativeDocumentMoniker": "Hubs\\PresentationHub.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\PresentationHub.cs",
+              "RelativeToolTip": "Hubs\\PresentationHub.cs",
+              "ViewState": "AgIAACMAAAAAAAAAAAAwwBQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T13:20:48.081Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "PresentationController.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Controllers\\PresentationController.cs",
+              "RelativeDocumentMoniker": "Controllers\\PresentationController.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Controllers\\PresentationController.cs",
+              "RelativeToolTip": "Controllers\\PresentationController.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAowCQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-29T13:21:38.021Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20250201172904_typeJsonRemove.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250201172904_typeJsonRemove.cs",
+              "RelativeDocumentMoniker": "Migrations\\20250201172904_typeJsonRemove.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250201172904_typeJsonRemove.cs",
+              "RelativeToolTip": "Migrations\\20250201172904_typeJsonRemove.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:29:04.47Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "20250201172354_typeJson.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250201172354_typeJson.cs",
+              "RelativeDocumentMoniker": "Migrations\\20250201172354_typeJson.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250201172354_typeJson.cs",
+              "RelativeToolTip": "Migrations\\20250201172354_typeJson.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:23:54.426Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Repositories\\Models\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\AppDbContext.cs",
+              "RelativeToolTip": "Repositories\\Models\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:23:23.702Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Entity.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\Entity.cs",
+              "RelativeDocumentMoniker": "Repositories\\Models\\Entity.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\Entity.cs",
+              "RelativeToolTip": "Repositories\\Models\\Entity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:23:17.211Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Presentation.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\Presentation.cs",
+              "RelativeDocumentMoniker": "Repositories\\Models\\Presentation.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\Presentation.cs",
+              "RelativeToolTip": "Repositories\\Models\\Presentation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:23:13.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserPresentation.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\UserPresentation.cs",
+              "RelativeDocumentMoniker": "Repositories\\Models\\UserPresentation.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\UserPresentation.cs",
+              "RelativeToolTip": "Repositories\\Models\\UserPresentation.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:23:03.698Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Repositories\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\User.cs",
+              "RelativeToolTip": "Repositories\\Models\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:22:59.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Slide.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\Slide.cs",
+              "RelativeDocumentMoniker": "Repositories\\Models\\Slide.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Repositories\\Models\\Slide.cs",
+              "RelativeToolTip": "Repositories\\Models\\Slide.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T17:21:51.157Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Commands.cs",
+              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Commands.cs",
+              "RelativeDocumentMoniker": "Hubs\\Commands.cs",
+              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Commands.cs",
+              "RelativeToolTip": "Hubs\\Commands.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-31T09:39:15.993Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: App/Dockerfile
+    container_name: app_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: app_nginx
+    volumes:
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./nginx/sslUniqum:/etc/nginx/sslUniqum:ro
+        - ./nginx/sslTkti:/etc/nginx/sslTkti:ro
+    ports:
+        - "80:80"
+        - "443:443"
+    depends_on:
+        - backend
+    restart: always
