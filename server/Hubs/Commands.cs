@@ -22,4 +22,6 @@ public static class Commands
 
     public const string PREV_SLIDE = "PrevSlide";
     public const string PREV_SLIDE_RECEIVED = "PrevSlideReceived";
+
+    public const string ON_SLIDE_CHANGED = "OnSlideChanged";
 }

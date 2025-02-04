@@ -7,4 +7,6 @@ public class Presentation : Entity
     public List<Slide> Slides { get; set; } = new();
 
     public List<UserPresentation> UserPresentations { get; set; } = new();
+
+    public bool IsPresentMode { get; set; } = false;
 }

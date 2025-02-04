@@ -28,6 +28,9 @@ namespace server.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("IsPresentMode")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime(6)");
 
@@ -57,6 +60,9 @@ namespace server.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("PresentationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Version")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

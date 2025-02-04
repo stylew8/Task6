@@ -151,3 +151,4 @@ C:\Users\vania\Desktop\Itransition\Task6\server\obj\Debug\net8.0\refint\server.d
 C:\Users\vania\Desktop\Itransition\Task6\server\obj\Debug\net8.0\server.pdb
 C:\Users\vania\Desktop\Itransition\Task6\server\obj\Debug\net8.0\server.genruntimeconfig.cache
 C:\Users\vania\Desktop\Itransition\Task6\server\obj\Debug\net8.0\ref\server.dll
+C:\Users\vania\Desktop\Itransition\Task6\server\obj\Debug\net8.0\server.sourcelink.json

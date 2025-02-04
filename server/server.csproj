@@ -28,8 +28,6 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Infastructure\Middlewares\" />
-    <Folder Include="Repositories\Interfaces\" />
-    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
 </Project>

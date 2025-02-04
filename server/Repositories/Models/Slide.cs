@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace server.Repositories.Models;
 
@@ -8,6 +8,7 @@ public class Slide : Entity
 
     public Presentation Presentation { get; set; }
 
-    //[Column(TypeName = "json")]
     public string Content { get; set; }
+
+    public int Version { get; set; }
 }

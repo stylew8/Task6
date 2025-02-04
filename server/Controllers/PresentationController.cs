@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using server.Hubs.Services.Interfaces;
+using server.Infastructure.Exceptions;
 using server.Repositories.Models;
 
 namespace server.Controllers;
@@ -7,11 +9,18 @@ namespace server.Controllers;
 [Controller]
 public class PresentationController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext context;
+    private readonly IUserService userService;
+    private readonly ISlideService slideService;
 
-    public PresentationController(AppDbContext context)
+    public PresentationController(
+        AppDbContext context,
+        IUserService userService,
+        ISlideService slideService)
     {
-        _context = context;
+        this.context = context;
+        this.userService = userService;
+        this.slideService = slideService;
     }
 
     [HttpGet]
@@ -19,7 +28,7 @@ public class PresentationController : ControllerBase
     public async Task<ActionResult<IEnumerable<Presentation>>> GetPresentations(GetPresentationsRequest request)
     {
 
-        var presentations = await _context
+        var presentations = await context
             .Presentations
             .Include(x => x.UserPresentations)
             .ThenInclude(u=>u.User)
@@ -42,30 +51,20 @@ public class PresentationController : ControllerBase
     [Route("/presentations")]
     public async Task<IActionResult> CreatePresentation([FromBody] CreatePresentationRequest request)
     {
-        var presentation = (await _context.Presentations.AddAsync(new Presentation()
+        var presentation = await userService.CreatePresentationAsync(new Presentation()
         {
             Title = request.Title
-        })).Entity;
+        });
 
-        await _context.SaveChangesAsync();
-
-        string authorizationHeader = HttpContext.Request?.Headers["Authorization"];
+        string username = HttpContext.Request?.Headers["Authorization"];
         int userId = 0;
 
-        if (!string.IsNullOrEmpty(authorizationHeader))
+        if (!string.IsNullOrEmpty(username))
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == authorizationHeader);
-
-            if (user == null)
-            {
-                user = (await _context.Users.AddAsync(new User() { Username = authorizationHeader })).Entity;
-
-                await _context.SaveChangesAsync();
-            }
-            userId = user.Id;
+           userId = (await userService.EnsureUserExists(username)).Id;
         }
 
-        await _context.UserPresentation.AddAsync(new UserPresentation()
+        await userService.CreateUserPresentation(new UserPresentation()
         {
             PresentationId = presentation.Id,
             UserId = userId,
@@ -73,14 +72,43 @@ public class PresentationController : ControllerBase
             IsOwner = true
 
         });
-
-
-        await _context.SaveChangesAsync();
+        
 
         return Ok(new CreatePresentationResponse(presentation.Id));
     }
+
+    [HttpGet("{presentationId}/slides")]
+    public async Task<IActionResult> GetSlides(GetSlidesRequest request)
+    {
+        var slides = await slideService.GetSlides(request.presentationId);
+        if (slides is null || !slides.Any())
+            return NotFound();
+
+        return Ok(slides.Select(x=>x.Content));
+    }
+
+    [HttpPost]
+    [Route("presentation/modeStatus")]
+    public async Task<IActionResult> ChangeModeStatus([FromBody] ChangeModeStatusRequest request)
+    {
+        await userService.ChangePresentationMode(request.PresentationId, request.IsEnable);
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("presentation/modeStatus/check")]
+    public async Task<IActionResult> CheckStatusMode([FromBody] CheckStatusModeRequest request)
+    {
+        await userService.CheckStatusMode(request.PresentationId, request.Username);
+
+        return Ok();
+    }
 }
 
+public record CheckStatusModeRequest(int PresentationId, string Username);
+public record ChangeModeStatusRequest(int PresentationId, bool IsEnable);
+public record GetSlidesRequest(int presentationId);
 public record CreatePresentationRequest(string Title);
 public record CreatePresentationResponse(int Id);
 public record GetPresentationsRequest(string Username);

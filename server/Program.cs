@@ -1,6 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using server.Hubs;
+using server.Hubs.Services;
+using server.Hubs.Services.Interfaces;
 using server.Repositories.Models;
 
 namespace server
@@ -25,6 +27,12 @@ namespace server
             {
                 options.MaximumReceiveMessageSize = 1048576;
             });
+
+            builder.Services.AddScoped<IClientNotifier, ClientNotifier>();
+            builder.Services.AddScoped<IPermissionService, PermissionService>();
+            builder.Services.AddScoped<IPresentationManager, PresentationManager>();
+            builder.Services.AddScoped<ISlideService, SlideService>();
+            builder.Services.AddScoped<IUserService, UserService>();
 
             builder.Services.AddCors(cors =>
                 cors.AddDefaultPolicy(d =>
@@ -60,6 +68,7 @@ namespace server
             app.MapControllers();
 
             app.MapHub<PresentationHub>("/presentationHub");
+            app.MapHub<PresentModeHub>("/presentModeHub");
 
             app.Run();
         }

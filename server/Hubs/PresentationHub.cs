@@ -1,309 +1,140 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using server.Repositories.Models;
-using System.Collections.Concurrent;
-using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Text;
-using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Crypto;
-using server.Hubs.Models;
+using server.Hubs.Services;
+using server.Hubs.Services.Interfaces;
 using server.Infastructure.Exceptions;
-using Svg.Skia;
+using server.Migrations;
+using server.Repositories.Models;
 
 namespace server.Hubs;
 
-
-public class PresentationHub : Hub
+public partial class PresentationHub : Hub
 {
+    private readonly IPresentationManager presentationManager;
+    private readonly IPermissionService permissionService;
+    private readonly ISlideService slideService;
+    private readonly IUserService userService;
+    private readonly IClientNotifier clientNotifier;
     private readonly AppDbContext context;
-    private static readonly ConcurrentDictionary<int, List<User>> Presentations = new();
+    private readonly ILogger<PresentationHub> logger;
 
-    private List<User> ConnectedUsers(int id)
+    public PresentationHub(
+        IPresentationManager presentationManager,
+        IPermissionService permissionService,
+        ISlideService slideService,
+        IUserService userService,
+        IClientNotifier clientNotifier,
+        AppDbContext context, ILogger<PresentationHub> logger)
     {
-        if (!Presentations.ContainsKey(id))
-        {
-            Console.WriteLine($"[Server] Presentation with id {id} not found.");
-            return new List<User>();
-        }
-
-        return Presentations[id];
-    }
-    private string GroupName(int id) => $"presentation-{id}";
-
-
-    public PresentationHub(AppDbContext context)
-    {
+        this.presentationManager = presentationManager;
+        this.permissionService = permissionService;
+        this.slideService = slideService;
+        this.userService = userService;
+        this.clientNotifier = clientNotifier;
         this.context = context;
+        this.logger = logger;
     }
 
     public async Task JoinPresentation(string id, string username)
     {
-        int presentationId = int.Parse(id);
+        var (presId, valid) = await ValidateRequest(id, username);
+        if (!valid) return;
 
-        if (presentationId == 0 || string.IsNullOrEmpty(username))
-        {
-            Console.WriteLine("[Server] Error: Invalid parameters.");
-            return;
-        }
+        await userService.EnsureUserExists(username);
+        await userService.EnsureUserPresentationPermissionsAsync(presId, username);
+        await HandleGroupJoining(presId, username);
+        await UpdatePermissionsAndNotify(presId);
+        await slideService.NotifySlidesCountChanged(presId);
+        await GetSlide(id, 0);
 
-        if (!context.Presentations.Any(x=>x.Id == presentationId))
-        {
-            throw new NotFoundException("Presentation was not created");
-        }
-
-        var presentation = Presentations.GetOrAdd(presentationId, _ => new());
-
-
-        if (!ConnectedUsers(presentationId)
-            .Any(u => u.Username == username))
-        {
-            ConnectedUsers(presentationId)
-                .Add(new User() { Username = username });
-        }
-        
-        //
-        // Console.WriteLine(JsonConvert.SerializeObject(presentation.Slides));
-        //
-
-        await Groups
-            .AddToGroupAsync(Context.ConnectionId, GroupName(presentationId));
-
-
-        var firstSlide = await context
-            .Slides
-            .FirstOrDefaultAsync(x => x.PresentationId == presentationId);
-
-        if (firstSlide == null)
-        {
-            firstSlide = (await context.Slides.AddAsync(new Slide()
-            {
-                Content = "[]",
-                PresentationId = presentationId
-            })).Entity;
-        }
-
-        await GetSlidesCount(presentationId);
-
-        await Clients
-            .Caller
-            .SendAsync(
-                Commands.SLIDE_UPDATED_COMMAND,
-                0,
-                firstSlide.Content
-                );
-
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Username == username);
-
-        if (user == null)
-        {
-            user = (await context.Users.AddAsync(new User()
-            {
-                Username = username
-            })).Entity;
-
-            await context.SaveChangesAsync();
-        }
-
-        var perm = await context
-            .UserPresentation
-            .FirstOrDefaultAsync(x => 
-                x.User.Username == username && x.PresentationId == presentationId
-                );
-
-        if (perm == null)
-        {
-            perm = (await context.UserPresentation.AddAsync(new UserPresentation()
-            {
-                UserId = user.Id,
-                PresentationId = presentationId,
-                IsOwner = false,
-                CanEdit = false
-            })).Entity;
-
-            await context.SaveChangesAsync();
-        }
-
-
-        List<Permission> permissions = await GetPermissions(presentationId, ConnectedUsers(presentationId));
-
-        await Clients
-            .Group(GroupName(presentationId))
-            .SendAsync(
-                Commands.USER_LIST_UPDATED,
-                permissions
-                );
     }
 
     public async Task UserDisconnect(string presentationId, string username)
     {
-        if (int.TryParse(presentationId, out int presId))
-        {
-            if (Presentations.TryGetValue(presId, out var presentation))
-            {
-                var firstOrDefault = Presentations[presId].FirstOrDefault(x => x.Username == username);
+        if (!int.TryParse(presentationId, out int presId)) return;
 
-                if (firstOrDefault != null) Presentations[presId].Remove(firstOrDefault);
-
-                List<Permission> permissions = await GetPermissions(presId, ConnectedUsers(presId));
-
-                await Clients
-                    .Group(GroupName(presId))
-                    .SendAsync(
-                        Commands.USER_LIST_UPDATED,
-                        permissions
-                    );
-            }
-        }
-    }
-
-    private async Task<List<Permission>> GetPermissions(int presentationId, List<User> connectedUsers)
-    {
-        var connectedUsernames = connectedUsers.Select(user => user.Username).ToList();
-
-        var userPresentation = await context.UserPresentation
-            .Include(x => x.User)
-            .Where(x => x.PresentationId == presentationId && connectedUsernames.Contains(x.User.Username))
-            .ToListAsync();
-
-        var result = userPresentation.Select(x => new Permission(
-            x.User.Username,
-            x.CanEdit,
-            x.IsOwner
-        )).ToList();
-
-        return result;
+        presentationManager.RemoveUser(presId, username);
+        await UpdatePermissionsAndNotify(presId);
     }
 
     public async Task SetUserEditPermission(string presentationId, string username, bool canEdit)
     {
-        if (int.TryParse(presentationId, out int presId))
-        {
-            if (Presentations.TryGetValue(presId, out var presentation))
-            {
-                var user = context
-                    .UserPresentation
-                    .Include(x => x.User)
-                    .FirstOrDefault(u => u.User.Username == username && u.PresentationId == presId);
+        if (!int.TryParse(presentationId, out int presId)) return;
 
-                if (user != null)
-                {
-                    user.CanEdit = canEdit;
-
-                    await context.SaveChangesAsync();
-                }
-
-                List<Permission> permissions = await GetPermissions(presId, ConnectedUsers(presId));
-
-                await Clients.Group(GroupName(presId))
-                    .SendAsync(
-                        Commands.USER_LIST_UPDATED,
-                        permissions
-                    );
-            }
-        }
+        await permissionService.UpdateEditPermission(presId, username, canEdit);
+        await UpdatePermissionsAndNotify(presId);
     }
 
-    public async Task UpdateSlide(string presentationId, string username, int slideId, string svgContent)
+    public async Task UpdateSlide(string presentationId, string username, int slideId, string svgContent, int expectedVersion)
     {
-    
-        int presId = int.Parse(presentationId);
-    
-        if (!Presentations.TryGetValue(presId, out var presentation))
-        {
-            return;
-        }
-    
-        var user = await context
-            .UserPresentation
-            .Include(x=>x.Presentation)
-                .ThenInclude(x=>x.Slides)
-            .FirstOrDefaultAsync(x =>
-                x.Presentation.Id == presId && x.User.Username == username
-                );
-    
-        if (user == null || !user.CanEdit)
-        {
-            Console.WriteLine($"User {username} does not have permission to edit.");
-            return;
-        }
-    
-        var slide = user.Presentation.Slides[slideId];
+        var (presId, valid) = await ValidateSlideUpdate(presentationId, username, slideId);
+        if (!valid) return;
 
-        if (slide.Content != svgContent)
-        {
-            
-            slide.Content = svgContent;
-        
-            await context.SaveChangesAsync();
-            
-        
-            if (slide == null)
-            {
-                Console.WriteLine($"Slide with ID {slideId} not found.");
-                return;
-            }
-        
-            await GetSlidesCount(presId);
-
-        
-            await Clients
-                .Group(GroupName(presId))
-                .SendAsync(
-                    Commands.SLIDE_UPDATED_COMMAND,
-                    slideId,
-                    svgContent
-                    );
-        }
+        var newVersion = await slideService.UpdateSlideContent(presId, slideId, svgContent, expectedVersion);
+        await clientNotifier.NotifySlideUpdated(presId, slideId, svgContent, newVersion);
+        await slideService.NotifySlidesCountChanged(presId);
     }
-
-
 
     public async Task GetSlide(string presentationId, int slideId)
     {
-        if (int.TryParse(presentationId, out int presId))
-        {
-            var slides = await context.Slides.Where(x => x.PresentationId == presId).ToListAsync();
+        if (!int.TryParse(presentationId, out int presId)) return;
 
-            var slide = slides[slideId];
-
-            await Clients
-                .Caller
-                .SendAsync(
-                    Commands.SLIDE_RECEIVED_COMMAND,
-                    slide.Content
-                );
-            
-        }
+        var content = await slideService.GetSlideContent(presId, slideId);
+        await clientNotifier.SendToCaller(Commands.SLIDE_RECEIVED_COMMAND, Context, content);
     }
 
     public async Task AddSlide(string presentationId)
     {
-        var id = int.Parse(presentationId);
-
-        await context.Slides.AddAsync(new Slide()
-        {
-            PresentationId = id,
-            Content = "[]"
-        });
-
-        await context.SaveChangesAsync();
-
-        await GetSlidesCount(id);
+        var presId = int.Parse(presentationId);
+        await slideService.AddNewSlide(presId);
+        await slideService.NotifySlidesCountChanged(presId);
     }
 
-    public async Task GetSlidesCount(int presentationId)
+    private async Task UpdatePermissionsAndNotify(int presId)
     {
-        var slidesCount = (await context
-            .Slides
-            .Where(x=>x.PresentationId == presentationId)
-            .ToListAsync())
-            .Count;
+        var permissions = await permissionService.GetPermissions(presId);
+        await clientNotifier.NotifyGroup(Commands.USER_LIST_UPDATED, presId, permissions);
+    }
 
-        await Clients
-            .Groups(GroupName(presentationId))
-            .SendAsync(Commands.SLIDES_COUNT_RECEIVED, slidesCount);
+    private async Task<(int presId, bool valid)> ValidateRequest(string id, string username)
+    {
+        if (!int.TryParse(id, out int presId) || presId == 0 || string.IsNullOrEmpty(username))
+        {
+            Console.WriteLine("[Server] Error: Invalid parameters.");
+            return (0, false);
+        }
+
+        if (!await context.Presentations.AnyAsync(x => x.Id == presId))
+        {
+            throw new NotFoundException("Presentation was not created");
+        }
+
+        return (presId, true);
+    }
+
+    private async Task HandleGroupJoining(int presId, string username)
+    {
+        if (presentationManager.TryAddUser(presId, username))
+        {
+            await clientNotifier.AddToGroup(Context.ConnectionId, presId);
+        }
+    }
+
+    private async Task SendInitialSlideData(int presId, string username)
+    {
+        var firstSlide = await slideService.GetOrCreateFirstSlide(presId);
+        await clientNotifier.SendInitialSlideData(Context, presId, firstSlide);
+    }
+
+    private async Task<(int presId, bool valid)> ValidateSlideUpdate(
+        string presentationId,
+        string username,
+        int slideId)
+    {
+        var (presId, valid) = await ValidateRequest(presentationId, username);
+        if (!valid) return (0, false);
+
+        var hasPermission = await permissionService.HasEditPermission(presId, username);
+        return (presId, hasPermission);
     }
 }
-
-public record Permission(string Username, bool CanEdit, bool IsOwner);
