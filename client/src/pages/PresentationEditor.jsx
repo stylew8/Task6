@@ -2,36 +2,87 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as fabric from 'fabric';
 import { Button, Dropdown } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import * as signalR from "@microsoft/signalr";
 import * as constants from "../utils/constants";
 import debounce from 'lodash.debounce';
+import { usePostApi } from '../utils/useApi';
+
+const MODE_DRAW = "draw";
+const MODE_SELECT = "draw";
+const VISIBLE = "visible";
+const WHITE_COLOR = "#fff"
+
+const DEFAULT_BRUSH_WIDTH = 3;
+const DEFAULT_BRUSH_COLOR = "black";
+
+const RECT_LEFT = 50;
+const RECT_TOP = 50;
+const RECT_WIDTH = 100;
+const RECT_HEIGHT = 100;
+const RECT_FILL_COLOR = "blue";
+
+const CIRCLE_LEFT = 100;
+const CIRCLE_TOP = 100;
+const CIRCLE_RADIUS = 50;
+const CIRCLE_FILL_COLOR = "red";
+
+const TEXT_LEFT = 150;
+const TEXT_TOP = 150;
+const TEXT_FONT_SIZE = 20;
+const TEXT_FILL_COLOR = "black";
+const TEXT_PLACEHOLDER = "Enter text";
+
+const LINE_POINTS = [50, 50, 150, 50];
+const LINE_STROKE_WIDTH = 5;
+const LINE_STROKE_COLOR = "black";
 
 
 function PresentationEditor() {
-  const { id } = useParams(0);
-  const canvasRef = useRef(null);
-  const fabricCanvas = useRef(null);
-  const connectionRef = useRef(null);
+  const { id } = useParams();
 
   const [users, setUsers] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [tool, setTool] = useState("select");
-  const [slides, setSlides] = useState([]);
   const [currentSlideId, setCurrentSlideId] = useState(0);
   const [userPermissions, setUserPermissions] = useState({});
   const [currentUser, setCurrentUser] = useState(localStorage.getItem(constants.USERNAME_LOCALSTORAGE));
-
-  const [slidesCount, setSlidesCount] = useState(0);
-
-  const prevCanvasJsonRef = useRef('');
-
-
   const [currentUserPermission, setCurrentUserPermission] = useState(null);
+  const [slidesCount, setSlidesCount] = useState(0);
+  const [isAutoSaveEnabled, setIsAutoSaveEnabled] = useState(false);
+  const [currentVersion, setCurrentVersion] = useState(null);
 
+  const canvasRef = useRef(null);
+  const fabricCanvas = useRef(null);
+  const connectionRef = useRef(null);
   const currentUserPermissionRef = useRef(currentUserPermission);
   const currentSlideIdRef = useRef(currentSlideId);
   const isConnectedRef = useRef(isConnected);
+
+
+
+
+  const debouncedSave = debounce(() => {
+    handleSave();
+  }, 2000);
+
+  useEffect(() => {
+    if (fabricCanvas.current) {
+      const handleObjectModified = () => {
+        if (isAutoSaveEnabled) {
+          debouncedSave();
+        }
+      };
+
+      fabricCanvas.current.on('object:modified', handleObjectModified);
+      fabricCanvas.current.on('object:added', handleObjectModified);
+
+      return () => {
+        fabricCanvas.current.off('object:modified', handleObjectModified);
+        fabricCanvas.current.off('object:added', handleObjectModified);
+      };
+    }
+  }, [isAutoSaveEnabled]);
 
   useEffect(() => {
     currentUserPermissionRef.current = currentUserPermission;
@@ -48,9 +99,9 @@ function PresentationEditor() {
         connectionRef.current.stop();
       }
     };
-  
+
     window.addEventListener("beforeunload", handleBeforeUnload);
-    
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -58,14 +109,18 @@ function PresentationEditor() {
 
   useEffect(() => {
     if (!connectionRef.current) {
-      connectionRef.current = new signalR.HubConnectionBuilder()
-        .withUrl(`${constants.API_URL}${constants.PRESENTATION_HUB}`, {
-          skipNegotiation: true,
-          transport: signalR.HttpTransportType.WebSockets,
-        })
-        .withAutomaticReconnect()
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
+      try {
+        connectionRef.current = new signalR.HubConnectionBuilder()
+          .withUrl(`${constants.API_URL}${constants.PRESENTATION_HUB}`, {
+            skipNegotiation: true,
+            transport: signalR.HttpTransportType.WebSockets,
+          })
+          .withAutomaticReconnect()
+          .configureLogging(signalR.LogLevel.Information)
+          .build();
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     const connection = connectionRef.current;
@@ -73,7 +128,6 @@ function PresentationEditor() {
     if (connection.state === constants.DISCONNECTED_STATE) {
       connection.start()
         .then(() => {
-          console.log("✅ Connected to SignalR.");
         })
         .then(() => {
           isConnectedRef.current = true;
@@ -87,16 +141,12 @@ function PresentationEditor() {
               isConnectedRef.current = true;
             })
             .catch(err => {
-              console.error("🚨 Error in JoinPresentation:", err);
+              console.error(constants.JOIN_PRESENTATION_COMMAND, " ", err);
               window.location.href = "/";
             });
         })
         .catch(err => console.error("🚨 Error connecting to SignalR:", err));
     }
-    connection.onclose(constants.USER_DISCONNECTED_COMMAND,()=>{
-      console.warn("connection was closed");
-    }
-    );
 
     connection.on(constants.USER_JOINED_COMMAND, (username) => {
       setUsers(prevUsers => (prevUsers.includes(username) ? prevUsers : [...prevUsers, username]));
@@ -125,70 +175,59 @@ function PresentationEditor() {
       setUsers(updatedUsers);
     });
 
-    connection.on(constants.SLIDE_UPDATED_COMMAND, (slideId, content) => {
-      try {
-        const parsedJSON = JSON.parse(content);
+    connection.on(constants.SLIDE_UPDATED_COMMAND, (slideId, content, version) => {
+      if (version > currentVersion) {
+        try {
+          const parsedJSON = JSON.parse(content);
 
-        if (parsedJSON != null && currentSlideIdRef.current === slideId) {
-          fabricCanvas.current.clear();
-          fabricCanvas.current.loadFromJSON(parsedJSON, () => {
-            fabricCanvas.current.requestRenderAll();
-
-            fabricCanvas.current.getObjects().forEach(obj => {
-              obj.set('visible', true);
-            });
-          });
+          if (parsedJSON != null && currentSlideIdRef.current === slideId) {
+            loadFabric(parsedJSON);
+          }
+          setCurrentVersion(version);
+        } catch (error) {
+          console.error("❌ Failed to parse or load JSON content:", error);
         }
-
-      } catch (error) {
-        console.error("❌ Failed to parse or load JSON content:", error);
       }
     });
+
+    const loadFabric = (parsedJSON) => {
+      fabricCanvas.current.clear();
+      fabricCanvas.current.loadFromJSON(parsedJSON, () => {
+        fabricCanvas.current.requestRenderAll();
+
+        fabricCanvas.current.getObjects().forEach(obj => {
+          obj.set(VISIBLE, true);
+        });
+      });
+    }
 
     connection.on(constants.SLIDES_COUNT_RECEIVED, (slidesCount) => {
       setSlidesCount(slidesCount);
     });
 
-    connection.on(constants.SLIDE_RECEIVED_COMMAND, (content) => {
-      const parsedJSON = JSON.parse(content);
+    connection.on(constants.SLIDE_RECEIVED_COMMAND, (resp) => {
+      try {
+        console.log(currentVersion);
 
-      if (parsedJSON != null) {
-        fabricCanvas.current.clear();
-        fabricCanvas.current.loadFromJSON(parsedJSON, () => {
-          fabricCanvas.current.requestRenderAll();
+        if (resp != null) {
+          loadFabric(resp.content);
 
-          fabricCanvas.current.getObjects().forEach(obj => {
-            obj.set('visible', true);
-          });
-        });
+          setCurrentVersion(resp.version);
+        }
+      } catch (error) {
+        console.error("❌ Failed to parse or load JSON content:", error);
       }
     });
 
     if (!fabricCanvas.current) {
       fabricCanvas.current = new fabric.Canvas(canvasRef.current, {
-        backgroundColor: "#fff",
+        backgroundColor: WHITE_COLOR,
       });
 
-      fabricCanvas.current.setWidth(window.innerWidth * 0.9);
-      fabricCanvas.current.setHeight(window.innerHeight * 1);
+      fabricCanvas.current.setWidth(window.innerWidth * 0.8);
+      fabricCanvas.current.setHeight(window.innerHeight * 0.92);
 
     }
-
-    const debouncedSave = debounce(() => {
-      handleSave();
-    }, 500);
-
-    fabricCanvas.current.on('object:modified', () => {
-      handleSave();
-    });
-
-    fabricCanvas.current.on('object:added', () => {
-      debouncedSave();
-    });
-
-    // fabricCanvas.current.on('object:removed',() => {
-    //   handleSave();
-    // });
 
     return () => {
       if (connection.state === constants.CONNECTED_STATE) {
@@ -207,9 +246,18 @@ function PresentationEditor() {
 
   const handleSave = () => {
     if (isConnectedRef.current && connectionRef.current?.state === constants.CONNECTED_STATE) {
-      let jsonData = JSON.stringify(fabricCanvas.current.toJSON());
+      const jsonString = JSON.stringify(fabricCanvas.current.toJSON());
 
-      connectionRef.current.invoke(constants.UPDATE_SLIDE_COMMAND, id.toString(), currentUser, currentSlideIdRef.current, jsonData)
+      console.log(currentVersion);
+
+      connectionRef.current.invoke(
+        constants.UPDATE_SLIDE_COMMAND,
+        id.toString(),
+        currentUser,
+        currentSlideIdRef.current,
+        jsonString,
+        currentVersion
+      )
         .catch(err => console.error("🚨 Ошибка при обновлении слайда:", err));
 
     } else {
@@ -220,12 +268,16 @@ function PresentationEditor() {
 
   const setDrawingMode = (mode) => {
     setTool(mode);
+
     if (fabricCanvas.current) {
-      fabricCanvas.current.isDrawingMode = mode === "draw";
-      if (mode === "draw") {
-        fabricCanvas.current.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas.current);
-        fabricCanvas.current.freeDrawingBrush.width = 3;
-        fabricCanvas.current.freeDrawingBrush.color = "black";
+      fabricCanvas.current.isDrawingMode = mode === MODE_DRAW;
+
+      if (mode === MODE_DRAW) {
+        fabricCanvas.current.freeDrawingBrush =
+          new fabric.PencilBrush(fabricCanvas.current);
+
+        fabricCanvas.current.freeDrawingBrush.width = DEFAULT_BRUSH_WIDTH;
+        fabricCanvas.current.freeDrawingBrush.color = DEFAULT_BRUSH_COLOR;
       }
     }
   };
@@ -233,12 +285,13 @@ function PresentationEditor() {
   const addRectangle = () => {
     if (fabricCanvas.current) {
       const rect = new fabric.Rect({
-        left: 50,
-        top: 50,
-        fill: "blue",
-        width: 100,
-        height: 100,
+        left: RECT_LEFT,
+        top: RECT_TOP,
+        fill: RECT_FILL_COLOR,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
       });
+
       fabricCanvas.current.add(rect);
     }
   };
@@ -246,34 +299,37 @@ function PresentationEditor() {
   const addCircle = () => {
     if (fabricCanvas.current) {
       const circle = new fabric.Circle({
-        left: 100,
-        top: 100,
-        fill: "red",
-        radius: 50,
+        left: CIRCLE_LEFT,
+        top: CIRCLE_TOP,
+        fill: CIRCLE_FILL_COLOR,
+        radius: CIRCLE_RADIUS,
       });
+
       fabricCanvas.current.add(circle);
     }
   };
 
   const addText = () => {
     if (fabricCanvas.current) {
-      const text = new fabric.Textbox("Enter text", {
-        left: 150,
-        top: 150,
-        fontSize: 20,
-        fill: "black",
+      const text = new fabric.Textbox(TEXT_PLACEHOLDER, {
+        left: TEXT_LEFT,
+        top: TEXT_TOP,
+        fontSize: TEXT_FONT_SIZE,
+        fill: TEXT_FILL_COLOR,
       });
+
       fabricCanvas.current.add(text);
     }
   };
 
   const addArrow = () => {
     if (fabricCanvas.current) {
-      const line = new fabric.Line([50, 50, 150, 50], {
-        stroke: "black",
-        strokeWidth: 5,
+      const line = new fabric.Line(LINE_POINTS, {
+        stroke: LINE_STROKE_COLOR,
+        strokeWidth: LINE_STROKE_WIDTH,
         selectable: true,
       });
+
       fabricCanvas.current.add(line);
     }
   };
@@ -283,65 +339,106 @@ function PresentationEditor() {
   };
 
   const loadSlide = (index) => {
-      setCurrentSlideId(index);
+    setCurrentSlideId(index);
 
-      connectionRef.current.invoke(constants.GET_SLIDE_COMMAND, id.toString(), index);
+    connectionRef.current.invoke(constants.GET_SLIDE_COMMAND, id.toString(), index);
 
   };
 
   const toggleEditPermission = (username) => {
     if (isConnectedRef.current && currentUser) {
       const canEdit = !userPermissions[username];
-      connectionRef.current.invoke("SetUserEditPermission", id.toString(), username, canEdit)
+      connectionRef.current.invoke(constants.SET_USER_EDIT_PERMISSION, id.toString(), username, canEdit)
         .catch(err => console.error("🚨 Error setting user permissions:", err));
     }
   };
+
+  const post = usePostApi();
+
+  const handlePresentMode = async () => {
+    let isEnable = true;
+
+    await post(`${constants.PRESENTATION_MODE_STATUS_API}`, {
+      presentationId: id,
+      isEnable: isEnable
+    });
+
+    connectionRef.current.stop();
+    window.location.href = constants.PRESENT_MODE_URL(id, isEnable);
+  }
 
   return (
     <div className="d-flex">
       <div className="col-9 p-3 d-flex flex-column">
         <div className='position-relative' style={{ zIndex: 1200 }}>
-          {currentUserPermission && currentUserPermission.canEdit === true &&(
-          <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-              Tools
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setDrawingMode("select")}>🔲 Select</Dropdown.Item>
-              <Dropdown.Item onClick={() => setDrawingMode("draw")}>✏️ Draw</Dropdown.Item>
-              <Dropdown.Item onClick={addRectangle}>🔲 Rectangle</Dropdown.Item>
-              <Dropdown.Item onClick={addCircle}>⭕ Circle</Dropdown.Item>
-              <Dropdown.Item onClick={addArrow}>➡️ Arrow</Dropdown.Item>
-              <Dropdown.Item onClick={addText}>📝 Text</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          {currentUserPermission && currentUserPermission.canEdit === true && (
+            <div className='d-flex flex-row my-auto mx-1'>
+              <Dropdown>
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                  Tools
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setDrawingMode(MODE_SELECT)}>🔲 Select</Dropdown.Item>
+                  <Dropdown.Item onClick={() => setDrawingMode(MODE_DRAW)}>✏️ Draw</Dropdown.Item>
+                  <Dropdown.Item onClick={addRectangle}>🔲 Rectangle</Dropdown.Item>
+                  <Dropdown.Item onClick={addCircle}>⭕ Circle</Dropdown.Item>
+                  <Dropdown.Item onClick={addArrow}>➡️ Arrow</Dropdown.Item>
+                  <Dropdown.Item onClick={addText}>📝 Text</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <div className="form-check form-switch mx-2 my-auto">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="autoSaveSwitch"
+                  checked={isAutoSaveEnabled}
+                  onChange={() => setIsAutoSaveEnabled(!isAutoSaveEnabled)}
+                />
+                <label className="form-check-label" htmlFor="autoSaveSwitch">
+                  AutoSave
+                </label>
+              </div>
+            </div>
           )}
         </div>
         <div>
           <canvas ref={canvasRef} className="border shadow-sm" />
         </div>
       </div>
-      <div className="mx-auto my-auto position-relative " style={{ zIndex: 1200 }}>
+      <div className="mx-5 my-auto" style={{ zIndex: 1200 }}>
         <Button variant="primary" onClick={handleSave} disabled={!isConnected || !userPermissions[currentUser]}>
           {isConnected ? "Save Slide" : "Connecting..."}
         </Button>
-        {currentUserPermission && currentUserPermission.isOwner === true &&(
+
+        {currentUserPermission && currentUserPermission.isOwner === true && (
           <Button variant="secondary" onClick={addSlide} disabled={!userPermissions[currentUser]}>➕ Add Slide</Button>
         )}
+
         <Button variant="secondary" onClick={() => loadSlide(currentSlideId - 1)} disabled={currentSlideId <= 0}>
           ⬅️ Prev Slide
         </Button>
+
         <Button variant="secondary" onClick={() => loadSlide(currentSlideId + 1)} disabled={currentSlideId >= slidesCount - 1}>
           ➡️ Next Slide
         </Button>
       </div>
-      <div className="col-3 p-4 border-left bg-light d-flex flex-column">
+      <div className="col-2 p-4 border-left bg-light d-flex flex-column">
+        <div>
+          {currentUserPermission && currentUserPermission.isOwner === true && (
+            <Button variant='success' className='my-3' onClick={handlePresentMode}>PRESENT</Button>
+          )}
+
+        </div>
         <h5 className="fw-bold">Connected Users:</h5>
 
         <ul className="list-group mt-3 overflow-auto" style={{ maxHeight: '400px' }}>
+
+
           {users.map((user, index) => (
             <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-              <span className="text-truncate" style={{ maxWidth: '80%' }}>{user.username} {user.canEdit ? "can edit":""}</span>
+              <span className="text-truncate" style={{ maxWidth: '80%' }}>{user.username} {user.canEdit ? "can edit" : ""}</span>
+
               {user &&
                 currentUserPermission.canEdit &&
                 currentUserPermission.isOwner &&
@@ -356,8 +453,10 @@ function PresentationEditor() {
                     {userPermissions[user.username] ? "Revoke" : "Grant"}
                   </Button>
                 )}
+
             </li>
           ))}
+
         </ul>
       </div>
     </div>

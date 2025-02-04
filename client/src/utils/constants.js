@@ -1,6 +1,7 @@
 export const USERNAME_LOCALSTORAGE = "username";
 export const API_URL = "http://localhost:5000/";
 export const PRESENTATION_HUB = "presentationHub";
+export const PRESENT_MODE_HUB = "presentModeHub";
 
 export const PRESENTATION_URL = "/presentation/"
 
@@ -40,3 +41,13 @@ export const PREV_SLIDE_RECEIVED = "PrevSlideReceived";
 
 export const SLIDE_ADD_COMMAND = "AddSlide";
 export const SLIDE_ADDED_COMMAND = "SlideAdded";
+
+export const SET_USER_EDIT_PERMISSION = "SetUserEditPermission";
+export const ON_SLIDE_CHANGED = "OnSlideChanged";
+export const LEAVE_PRESENTATION = "LeavePresentation";
+export const SET_SLIDE = "SetSlide";
+
+export const PRESENT_MODE_URL = (id, isPresenter) => `/presentMode/${id}/${isPresenter}`;
+
+export const PRESENTATION_MODE_STATUS_API = "presentation/modeStatus";
+export const PRESENTATION_MODE_STATUS_CHECK_API = "presentation/modeStatus/check";
