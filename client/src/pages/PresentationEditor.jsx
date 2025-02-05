@@ -9,7 +9,7 @@ import debounce from 'lodash.debounce';
 import { usePostApi } from '../utils/useApi';
 
 const MODE_DRAW = "draw";
-const MODE_SELECT = "draw";
+const MODE_SELECT = "select";
 const VISIBLE = "visible";
 const WHITE_COLOR = "#fff"
 
@@ -51,6 +51,7 @@ function PresentationEditor() {
   const [slidesCount, setSlidesCount] = useState(0);
   const [isAutoSaveEnabled, setIsAutoSaveEnabled] = useState(false);
   const [currentVersion, setCurrentVersion] = useState(null);
+  const [selectedObject, setSelectedObject] = useState(null);
 
   const canvasRef = useRef(null);
   const fabricCanvas = useRef(null);
@@ -65,6 +66,33 @@ function PresentationEditor() {
   const debouncedSave = debounce(() => {
     handleSave();
   }, 2000);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Delete') {
+        handleDelete();
+      }
+    };
+
+    const handleWheel = (event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+        if (event.deltaY < 0) {
+          handleZoomIn();
+        } else {
+          handleZoomOut();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('wheel', handleWheel, { passive: false }); 
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
 
   useEffect(() => {
     if (fabricCanvas.current) {
@@ -227,6 +255,9 @@ function PresentationEditor() {
       fabricCanvas.current.setWidth(window.innerWidth * 0.8);
       fabricCanvas.current.setHeight(window.innerHeight * 0.92);
 
+      fabricCanvas.current.on('selection:created', (e) => setSelectedObject(e.selected[0]));
+      fabricCanvas.current.on('selection:updated', (e) => setSelectedObject(e.selected[0]));
+      fabricCanvas.current.on('selection:cleared', () => setSelectedObject(null));
     }
 
     return () => {
@@ -268,17 +299,18 @@ function PresentationEditor() {
 
   const setDrawingMode = (mode) => {
     setTool(mode);
-
+  
     if (fabricCanvas.current) {
-      fabricCanvas.current.isDrawingMode = mode === MODE_DRAW;
-
       if (mode === MODE_DRAW) {
-        fabricCanvas.current.freeDrawingBrush =
-          new fabric.PencilBrush(fabricCanvas.current);
-
+        fabricCanvas.current.isDrawingMode = true;
+        fabricCanvas.current.freeDrawingBrush = new fabric.PencilBrush(fabricCanvas.current);
         fabricCanvas.current.freeDrawingBrush.width = DEFAULT_BRUSH_WIDTH;
         fabricCanvas.current.freeDrawingBrush.color = DEFAULT_BRUSH_COLOR;
+      } else {
+        fabricCanvas.current.isDrawingMode = false;
       }
+  
+      fabricCanvas.current.renderAll();
     }
   };
 
@@ -293,6 +325,7 @@ function PresentationEditor() {
       });
 
       fabricCanvas.current.add(rect);
+      setDrawingMode(MODE_SELECT);
     }
   };
 
@@ -306,6 +339,7 @@ function PresentationEditor() {
       });
 
       fabricCanvas.current.add(circle);
+      setDrawingMode(MODE_SELECT);
     }
   };
 
@@ -319,6 +353,7 @@ function PresentationEditor() {
       });
 
       fabricCanvas.current.add(text);
+      setDrawingMode(MODE_SELECT);
     }
   };
 
@@ -331,6 +366,7 @@ function PresentationEditor() {
       });
 
       fabricCanvas.current.add(line);
+      setDrawingMode(MODE_SELECT);
     }
   };
 
@@ -367,25 +403,70 @@ function PresentationEditor() {
     window.location.href = constants.PRESENT_MODE_URL(id, isEnable);
   }
 
+  const handleDelete = () => {
+    const canvas = fabricCanvas.current;
+    if (!canvas) return;
+    const activeObjects = canvas.getActiveObjects();
+    if (activeObjects?.length) {
+      canvas.discardActiveObject();
+      canvas.remove(...activeObjects);
+      canvas.requestRenderAll();
+    }
+  };
+  
+  const handleZoomIn = () => {
+    fabricCanvas.current?.setZoom(fabricCanvas.current.getZoom() * 1.2);
+    fabricCanvas.current?.requestRenderAll();
+  };
+  
+  const handleZoomOut = () => {
+    fabricCanvas.current?.setZoom(fabricCanvas.current.getZoom() / 1.2);
+    fabricCanvas.current?.requestRenderAll();
+  };
+  
+  const editText = () => {
+    const text = fabricCanvas.current?.getActiveObject();
+    if (text?.type === 'textbox') {
+      text.enterEditing();
+      text.hiddenTextarea.focus();
+    }
+  };
+
   return (
     <div className="d-flex">
       <div className="col-9 p-3 d-flex flex-column">
         <div className='position-relative' style={{ zIndex: 1200 }}>
           {currentUserPermission && currentUserPermission.canEdit === true && (
-            <div className='d-flex flex-row my-auto mx-1'>
-              <Dropdown>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                  Tools
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setDrawingMode(MODE_SELECT)}>🔲 Select</Dropdown.Item>
-                  <Dropdown.Item onClick={() => setDrawingMode(MODE_DRAW)}>✏️ Draw</Dropdown.Item>
-                  <Dropdown.Item onClick={addRectangle}>🔲 Rectangle</Dropdown.Item>
-                  <Dropdown.Item onClick={addCircle}>⭕ Circle</Dropdown.Item>
-                  <Dropdown.Item onClick={addArrow}>➡️ Arrow</Dropdown.Item>
-                  <Dropdown.Item onClick={addText}>📝 Text</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+            <div className='d-flex flex-row my-auto mx-1 gap-1 mb-1'>
+              <Button
+                variant={tool === MODE_SELECT ? 'primary' : 'secondary'}
+                onClick={() => setDrawingMode(MODE_SELECT)}
+              >
+                🔲 Select
+              </Button>
+              <Button
+                variant={tool === MODE_DRAW ? 'primary' : 'secondary'}
+                onClick={() => setDrawingMode(MODE_DRAW)}
+              >
+                ✏️ Draw
+              </Button>
+              <Button variant="secondary" onClick={addRectangle}>🔲 Rectangle</Button>
+              <Button variant="secondary" onClick={addCircle}>⭕ Circle</Button>
+              <Button variant="secondary" onClick={addArrow}>➡️ Arrow</Button>
+              <Button variant="secondary" onClick={addText}>📝 Text</Button>
+              <Button
+                variant="secondary"
+                onClick={editText}
+                disabled={!selectedObject || selectedObject.type !== 'textbox'}
+              >
+                Edit Text
+              </Button>
+              <Button variant="danger" onClick={handleDelete}>🗑️ Delete</Button>
+
+              <div className="d-flex gap-1 ms-2">
+                <Button variant="secondary" onClick={handleZoomIn}>➕ Zoom In</Button>
+                <Button variant="secondary" onClick={handleZoomOut}>➖ Zoom Out</Button>
+              </div>
               <div className="form-check form-switch mx-2 my-auto">
                 <input
                   className="form-check-input"
@@ -459,7 +540,7 @@ function PresentationEditor() {
 
         </ul>
       </div>
-    </div>
+    </div >
   );
 }
 

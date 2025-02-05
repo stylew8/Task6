@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\slideservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\slideservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\controllers\\presentationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:controllers\\presentationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\clientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\clientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\interfaces\\iclientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\interfaces\\iclientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\presentationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\presentationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,24 +27,12 @@
       "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\slideservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\slideservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\interfaces\\islideservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\interfaces\\islideservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\controllers\\presentationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:controllers\\presentationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\presentationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\presentationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\clientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\clientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\services\\interfaces\\iclientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:hubs\\services\\interfaces\\iclientnotifier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\hubs\\models\\slidedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -45,10 +45,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\repositories\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:repositories\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|c:\\users\\vania\\desktop\\itransition\\task6\\server\\migrations\\20250204175729_versionchanges.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D54DC332-763D-42D7-B056-570AAD9D693F}|server.csproj|solutionrelative:migrations\\20250204175729_versionchanges.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -58,41 +54,30 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "20250204175729_versionChanges.cs",
-              "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250204175729_versionChanges.cs",
-              "RelativeDocumentMoniker": "Migrations\\20250204175729_versionChanges.cs",
-              "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Migrations\\20250204175729_versionChanges.cs",
-              "RelativeToolTip": "Migrations\\20250204175729_versionChanges.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T17:57:29.274Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "ClientNotifier.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\ClientNotifier.cs",
               "RelativeDocumentMoniker": "Hubs\\Services\\ClientNotifier.cs",
               "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\ClientNotifier.cs",
               "RelativeToolTip": "Hubs\\Services\\ClientNotifier.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAawBsAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAABQAAAAAAAAAAAAEwCgAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T17:51:59.782Z"
+              "WhenOpened": "2025-02-04T17:51:59.782Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 2,
               "Title": "IClientNotifier.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\Interfaces\\IClientNotifier.cs",
               "RelativeDocumentMoniker": "Hubs\\Services\\Interfaces\\IClientNotifier.cs",
               "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\Interfaces\\IClientNotifier.cs",
               "RelativeToolTip": "Hubs\\Services\\Interfaces\\IClientNotifier.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABTAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-04T17:51:52.397Z"
             },
@@ -134,19 +119,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\UserService.cs",
               "RelativeDocumentMoniker": "Hubs\\Services\\UserService.cs",
               "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\UserService.cs",
               "RelativeToolTip": "Hubs\\Services\\UserService.cs",
-              "ViewState": "AgIAAE8AAAAAAAAAAAAkwDoAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAE4AAAAAAAAAAIAwwB0AAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-04T16:51:51.477Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "IUserService.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\Interfaces\\IUserService.cs",
               "RelativeDocumentMoniker": "Hubs\\Services\\Interfaces\\IUserService.cs",
@@ -158,32 +143,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "PresentationController.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Controllers\\PresentationController.cs",
               "RelativeDocumentMoniker": "Controllers\\PresentationController.cs",
               "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Controllers\\PresentationController.cs",
               "RelativeToolTip": "Controllers\\PresentationController.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAowDUAAAA6AAAAAAAAAA==",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAwwDUAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T16:51:19.324Z"
+              "WhenOpened": "2025-02-04T16:51:19.324Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "SlideService.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\SlideService.cs",
               "RelativeDocumentMoniker": "Hubs\\Services\\SlideService.cs",
               "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\SlideService.cs",
               "RelativeToolTip": "Hubs\\Services\\SlideService.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAIwBkAAAAfAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAAD4vzsAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T16:39:19.073Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-04T16:39:19.073Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "ISlideService.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\Services\\Interfaces\\ISlideService.cs",
               "RelativeDocumentMoniker": "Hubs\\Services\\Interfaces\\ISlideService.cs",
@@ -195,13 +180,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "PresentationHub.cs",
               "DocumentMoniker": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\PresentationHub.cs",
               "RelativeDocumentMoniker": "Hubs\\PresentationHub.cs",
               "ToolTip": "C:\\Users\\vania\\Desktop\\Itransition\\Task6\\server\\Hubs\\PresentationHub.cs",
               "RelativeToolTip": "Hubs\\PresentationHub.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAA4wEkAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAEkAAAAAAAAAAAD4v18AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-04T16:14:42.844Z"
             }
