@@ -1,5 +1,6 @@
 export const USERNAME_LOCALSTORAGE = "username";
-export const API_URL = "http://localhost:5000/";
+export const API_URL = "https://tkti.lt/api/";
+export const CLIENT_URL = "https://tkti.lt";
 export const PRESENTATION_HUB = "presentationHub";
 export const PRESENT_MODE_HUB = "presentModeHub";
 

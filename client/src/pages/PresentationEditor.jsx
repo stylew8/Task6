@@ -86,7 +86,7 @@ function PresentationEditor() {
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('wheel', handleWheel, { passive: false }); 
+    window.addEventListener('wheel', handleWheel, { passive: false });
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -299,7 +299,7 @@ function PresentationEditor() {
 
   const setDrawingMode = (mode) => {
     setTool(mode);
-  
+
     if (fabricCanvas.current) {
       if (mode === MODE_DRAW) {
         fabricCanvas.current.isDrawingMode = true;
@@ -309,7 +309,7 @@ function PresentationEditor() {
       } else {
         fabricCanvas.current.isDrawingMode = false;
       }
-  
+
       fabricCanvas.current.renderAll();
     }
   };
@@ -413,17 +413,17 @@ function PresentationEditor() {
       canvas.requestRenderAll();
     }
   };
-  
+
   const handleZoomIn = () => {
     fabricCanvas.current?.setZoom(fabricCanvas.current.getZoom() * 1.2);
     fabricCanvas.current?.requestRenderAll();
   };
-  
+
   const handleZoomOut = () => {
     fabricCanvas.current?.setZoom(fabricCanvas.current.getZoom() / 1.2);
     fabricCanvas.current?.requestRenderAll();
   };
-  
+
   const editText = () => {
     const text = fabricCanvas.current?.getActiveObject();
     if (text?.type === 'textbox') {
@@ -437,7 +437,7 @@ function PresentationEditor() {
       <div className="col-9 p-3 d-flex flex-column">
         <div className='position-relative' style={{ zIndex: 1200 }}>
           {currentUserPermission && currentUserPermission.canEdit === true && (
-            <div className='d-flex flex-row my-auto mx-1 gap-1 mb-1'>
+            <div className="d-flex flex-wrap gap-2 p-2 justify-content-center justify-content-md-start">
               <Button
                 variant={tool === MODE_SELECT ? 'primary' : 'secondary'}
                 onClick={() => setDrawingMode(MODE_SELECT)}
@@ -463,11 +463,12 @@ function PresentationEditor() {
               </Button>
               <Button variant="danger" onClick={handleDelete}>🗑️ Delete</Button>
 
-              <div className="d-flex gap-1 ms-2">
+              <div className="d-flex flex-wrap gap-1 mt-2">
                 <Button variant="secondary" onClick={handleZoomIn}>➕ Zoom In</Button>
                 <Button variant="secondary" onClick={handleZoomOut}>➖ Zoom Out</Button>
               </div>
-              <div className="form-check form-switch mx-2 my-auto">
+
+              <div className="form-check form-switch mx-2 my-auto mt-2">
                 <input
                   className="form-check-input"
                   type="checkbox"

@@ -2,7 +2,7 @@ import React, { use, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import * as fabric from 'fabric';
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import { API_URL, JOIN_PRESENTATION_COMMAND, LEAVE_PRESENTATION, ON_SLIDE_CHANGED, PRESENT_MODE_HUB, PRESENTATION_MODE_STATUS_CHECK_API, SET_SLIDE, USERNAME_LOCALSTORAGE } from '../utils/constants';
+import { API_URL, CLIENT_URL, JOIN_PRESENTATION_COMMAND, LEAVE_PRESENTATION, ON_SLIDE_CHANGED, PRESENT_MODE_HUB, PRESENT_MODE_URL, PRESENTATION_MODE_STATUS_CHECK_API, SET_SLIDE, USERNAME_LOCALSTORAGE } from '../utils/constants';
 import { useParams } from 'react-router-dom';
 import { usePostApi } from '../utils/useApi';
 import { Button } from 'react-bootstrap';
@@ -169,51 +169,51 @@ function PresentMode() {
 
     const handleExportToPdf = async () => {
         const pdf = new jsPDF('p', 'pt', 'a4');
-    
+
         for (let i = 0; i < slides.length; i++) {
             const slideJSON = slides[i];
-            
+
             const tempDiv = document.createElement('div');
             document.body.appendChild(tempDiv);
-    
+
             const fabricCanvas = new fabric.StaticCanvas(tempDiv, {
                 width: 1000,
                 height: 800,
                 renderOnAddRemove: false
             });
-    
+
             await new Promise((resolve) => {
                 fabricCanvas.loadFromJSON(slideJSON, () => {
                     fabricCanvas.renderAll();
-                    
+
                     setTimeout(() => {
                         if (fabricCanvas.isEmpty()) {
                             console.error('Canvas is empty!', slideJSON);
                             resolve();
                             return;
                         }
-    
+
                         const imgData = fabricCanvas.toDataURL({
                             format: 'png',
                             multiplier: 2,
                             quality: 1
                         });
-    
+
                         const pageWidth = pdf.internal.pageSize.getWidth();
                         const pageHeight = pdf.internal.pageSize.getHeight();
                         pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
-    
+
                         tempDiv.remove();
                         resolve();
-                    }, 500); 
+                    }, 500);
                 });
             });
-    
+
             if (i < slides.length - 1) {
                 pdf.addPage();
             }
         }
-    
+
         pdf.save('slides.pdf');
     };
 
@@ -225,6 +225,18 @@ function PresentMode() {
                         <h2>Presentation ID: {presentationId}</h2>
                         <div className='mx-5'>
                             <Button onClick={handleExportToPdf}>Export pdf</Button>
+                        </div>
+
+                        <div className="col d-flex align-items-center">
+                            <span className="me-2">{CLIENT_URL + PRESENT_MODE_URL(presentationId, false)}</span>
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(CLIENT_URL + PRESENT_MODE_URL(presentationId, false));
+                                }}
+                            >
+                                Copy
+                            </button>
                         </div>
                     </div>
                     <p>Slide {currentIndex + 1} of {slides.length}</p>
